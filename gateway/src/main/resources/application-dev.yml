@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: gateway
+  config:
+    import: configserver:http://config-server:8888
+  sleuth:
+    reactor:
+      instrumentation-type: decorate_on_each
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka/

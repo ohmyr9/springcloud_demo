@@ -1,0 +1,50 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: gateway
+  config:
+    import: optional:configserver:http://localhost:8888
+  sleuth:
+    reactor:
+      instrumentation-type: decorate_queues
+    sampler:
+      probability: 1.0
+    baggage:
+      remote-fields: CURRENT_USER
+  #  zipkin:
+#    sender:
+#      type: web
+#    base-url: http://localhost:9411
+#    enabled: true
+#    discovery-client-enabled: false
+  cloud:
+    gateway:
+      routes:
+        - id: order
+          uri: lb://order
+          predicates:
+            - Path=/v1/orders/**
+          filters:
+            - CircuitBreaker=order
+        - id: user
+          uri: lb://user
+          predicates:
+            - Path=/v1/users/**
+          filters:
+            - CircuitBreaker=user
+        - id: product
+          uri: lb://product
+          predicates:
+            - Path=/v1/products/**
+          filters:
+            - CircuitBreaker=product
+      default-filters:
+        - name: CircuitBreaker
+          args:
+            fallbackUri: forward:/fallback
+resilience4j:
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 2s
