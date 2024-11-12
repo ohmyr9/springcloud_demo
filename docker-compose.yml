@@ -1,0 +1,89 @@
+services:
+  config-server:
+    build: ./config-server
+    hostname: config-server
+    healthcheck:
+      test: [ "CMD-SHELL","curl http://127.0.0.1:8888/actuator/health" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    ports:
+      - 8888:8888
+    networks:
+      - internal_access
+  eureka:
+    build: ./eureka
+    hostname: eureka
+    healthcheck:
+      test: [ "CMD-SHELL","curl http://127.0.0.1:8761/actuator/health" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    ports:
+      - 8761:8761
+    networks:
+      - internal_access
+      - external_access
+    depends_on:
+      config-server:
+        condition: service_healthy
+  user:
+    build: ./user
+    ports:
+      - 8089:8089
+    networks:
+      - internal_access
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+  gateway:
+    build: ./gateway
+    ports:
+      - 8088:8088
+    networks:
+      - internal_access
+      - external_access
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+  product:
+    build: ./product
+    ports:
+      - 8081:8081
+    networks:
+      - internal_access
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+  order:
+    build: ./order
+    ports:
+      - 8080:8080
+    networks:
+      - internal_access
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+  zipkin:
+    image: openzipkin/zipkin
+    hostname: zipkin
+    ports:
+      - 9411:9411
+    networks:
+      - internal_access
+      - external_access
+
+networks:
+  internal_access:
+    internal: true
+  external_access:
