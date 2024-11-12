@@ -1,0 +1,34 @@
+server:
+  port: 8088
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: order
+          uri: lb://order
+          predicates:
+            - Path=/v1/orders/**
+          filters:
+            - CircuitBreaker=order
+        - id: user
+          uri: lb://user
+          predicates:
+            - Path=/v1/users/**
+          filters:
+            - CircuitBreaker=user
+        - id: product
+          uri: lb://product
+          predicates:
+            - Path=/v1/products/**
+          filters:
+            - CircuitBreaker=product
+      default-filters:
+        - name: CircuitBreaker
+          args:
+            fallbackUri: forward:/fallback
+
+resilience4j:
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 2s
