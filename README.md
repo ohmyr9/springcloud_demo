@@ -63,7 +63,7 @@ JDK version: 21
 mvn install -Dmaven.test.skip=true
 ``````
 
-There are two ways to start up the project. Every module has 2 property files, one for the docker-compose environment (**application-dev.properties**), and the other (**application.properties**)for local start-up
+There are two ways to start the project. Each module has two property files: one for the Docker Compose environment (application-dev.properties) and another forapplication.properties). local startup (
 
 1. Use docker-compose
 
@@ -73,7 +73,7 @@ There are two ways to start up the project. Every module has 2 property files, o
 docker-compose up
 ``````
 
-2. Or manually start all the services using `mvn spring:boot run` one by one. Config-server is not needed in the local environment. 
+2. Alternatively, you can manually start all the services one by one using `mvn spring-boot:run`. The config server is not needed in the local environment.
 
 #### Functionality:
 
@@ -101,11 +101,21 @@ docker-compose up
   - Create User POST  http://localhost:8088/v1/users
   - All the authentication and authorization happened in the Spring Cloud Gateway, which utilizes spring security to ensure safety. The default configuration 
 
-- Some of the important workflows are placing orders and updating orders because those are typical scenarios.  
+- Key workflows include placing and updating orders, as these are typical scenarios for distributed transactions.
 
-  <img src="./README_img/image-20241113150214693.png" alt="image-20241113150214693" style="zoom: 50%;" />
+  <img src="/Users/yiluo/IdeaProjects/springcloud_wiley/README_img/image-20241113154435340.png" alt="image-20241113154435340" style="zoom:50%;" />
 
-In this demo, the Order service acts as a coordinator in this workflow, it has an order order_change_transaction dedicated to managing the status of the distributed transaction.
+In this demo, the Order service acts as a coordinator in this workflow, it has an order `order_change_transaction` dedicated to managing the status of the distributed transaction.
+
+From the beginning of the distributed transaction, this table will track the entire state of the transaction. The most challenging part occurs at step 5, when the order service must verify whether the inventory update was successful.
+
+There are three possible responses to the inventory updating state of the transaction:
+
+1. Inventory **Success**: If the transaction is successful, it simply needs to save the order and change the transaction status to "Finished."
+
+2. **Inventory Update Failed**: If the inventory update fails, the transaction must be canceled.
+
+3. **Unknown**: If the response is unknown, the transaction should also be canceled. In this case, the user should receive an immediate response indicating the failure. Following this, the transaction coordinator is responsible for checking the status of the inventory update and implementing any necessary reverse or compensatory actions.n needs to be canceled. 
 
 ### Detail description
 
@@ -127,7 +137,7 @@ In this demo, the Order service acts as a coordinator in this workflow, it has a
 
 ### Database
 
-Almost all schemas in this demo 
+The schemas of the project are located in the `src/main/resource`. Almost all schemas in this demo lack audit fields, and all the deleting actions are physical deletions.  
 
 #### Testing
 
@@ -144,6 +154,7 @@ There is only one pair of tests in this test suit using spring cloud contracts, 
 2. Currently, there is no global error handling, also no per-service error handling mechanism.
 
 3. eureka and config-server only support single-instance deployment, the whole project hasn't been tested in a cluster environment.
+4. ...
 
 ##### 
 

@@ -1,0 +1,89 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > InventoryRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ronnie.product.repo</a>
+</div>
+
+<h1>Coverage Summary for Class: InventoryRepository (com.ronnie.product.repo)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">InventoryRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ronnie.product.repo;
+&nbsp;
+&nbsp;import com.ronnie.product.model.Inventory;
+&nbsp;import org.springframework.data.jdbc.repository.query.Modifying;
+&nbsp;import org.springframework.data.jdbc.repository.query.Query;
+&nbsp;import org.springframework.data.repository.CrudRepository;
+&nbsp;
+&nbsp;import java.util.Collection;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;public interface InventoryRepository extends CrudRepository&lt;Inventory,Integer&gt; {
+&nbsp;    Iterable&lt;Inventory&gt; findAllByProductIdIn(Collection&lt;Integer&gt; productIds);
+&nbsp;
+&nbsp;    @Modifying
+&nbsp;    @Query(&quot;UPDATE INVENTORY SET QUANTITY=QUANTITY-:quantity WHERE id = :productId AND QUANTITY&gt;=:quantity&quot;)
+&nbsp;    boolean decreaseInventory(Integer productId, Integer quantity);
+&nbsp;
+&nbsp;    Optional&lt;Inventory&gt; findByProductId(Integer productId);
+&nbsp;
+&nbsp;    void deleteByProductId(Integer productId);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-13 13:31</div>
+</div>
+</body>
+</html>

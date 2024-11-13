@@ -1,0 +1,251 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > OrderChangeCoordinator</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ronnie.order.service</a>
+</div>
+
+<h1>Coverage Summary for Class: OrderChangeCoordinator (com.ronnie.order.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OrderChangeCoordinator</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.4%
+  </span>
+  <span class="absValue">
+    (38/45)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">OrderChangeCoordinator$MockitoMock$RZBQBFRw</td>
+  </tr>
+  <tr>
+    <td class="name">OrderChangeCoordinator$MockitoMock$RZBQBFRw$auxiliary$7EPgylQi</td>
+  </tr>
+  <tr>
+    <td class="name">OrderChangeCoordinator$MockitoMock$RZBQBFRw$auxiliary$DyOxCgcE</td>
+  </tr>
+  <tr>
+    <td class="name">OrderChangeCoordinator$MockitoMock$RZBQBFRw$auxiliary$ibAGVdri</td>
+  </tr>
+  <tr>
+    <td class="name">OrderChangeCoordinator$MockitoMock$RZBQBFRw$auxiliary$jf6njXid</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.4%
+  </span>
+  <span class="absValue">
+    (38/45)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ronnie.order.service;
+&nbsp;
+&nbsp;import com.ronnie.common.exception.UnknownException;
+&nbsp;import com.ronnie.order.api.dto.OrderDetailResDTO;
+&nbsp;import com.ronnie.order.api.dto.PlaceOrderReqDTO;
+&nbsp;import com.ronnie.order.api.dto.UpdateOrderReqDTO;
+&nbsp;import com.ronnie.order.model.Order;
+&nbsp;import com.ronnie.order.model.OrderChangeTransaction;
+&nbsp;import com.ronnie.order.model.OrderLineItem;
+&nbsp;import com.ronnie.order.remote.BatchUpdateInventoryReqDTO;
+&nbsp;import com.ronnie.order.remote.ChangeInventoryDTO;
+&nbsp;import com.ronnie.order.remote.ProductRemoteService;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.Set;
+&nbsp;import java.util.UUID;
+&nbsp;import java.util.function.Function;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;import static com.ronnie.order.service.OrderService.mapOrderToOrderDTO;
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;@Service
+&nbsp;public class OrderChangeCoordinator {
+&nbsp;    private final OrderService orderService;
+&nbsp;    private final ProductRemoteService productRemoteService;
+&nbsp;
+<b class="fc">&nbsp;    public OrderChangeCoordinator(OrderService orderService, ProductRemoteService productRemoteService) {</b>
+<b class="fc">&nbsp;        this.orderService = orderService;</b>
+<b class="fc">&nbsp;        this.productRemoteService = productRemoteService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public OrderDetailResDTO placeOrder(PlaceOrderReqDTO placeOrderReq) {
+<b class="fc">&nbsp;        OrderService.validatePlaceOrder(placeOrderReq);</b>
+&nbsp;        //validate input
+&nbsp;        try {
+<b class="fc">&nbsp;            String orderId = UUID.randomUUID().toString();</b>
+<b class="fc">&nbsp;            String requestId = UUID.randomUUID().toString();</b>
+<b class="fc">&nbsp;            OrderChangeTransaction transaction = orderService.startPlace(placeOrderReq, orderId, requestId);</b>
+<b class="fc">&nbsp;            Set&lt;OrderLineItem&gt; lineItems = placeOrderReq.getLineItems().stream()</b>
+<b class="fc">&nbsp;                    .map(dto -&gt; new OrderLineItem(null, dto.getProductId(), dto.getQuantity()))</b>
+<b class="fc">&nbsp;                    .collect(Collectors.toSet());</b>
+<b class="fc">&nbsp;            productRemoteService.decreaseInventory(</b>
+<b class="fc">&nbsp;                    BatchUpdateInventoryReqDTO.builder()</b>
+<b class="fc">&nbsp;                            .requestId(requestId)</b>
+<b class="fc">&nbsp;                            .decreaseInventories(</b>
+<b class="fc">&nbsp;                                    lineItems.stream().map(l -&gt; new ChangeInventoryDTO(l.getProductId(), l.getQuantity())).collect(Collectors.toList()))</b>
+<b class="fc">&nbsp;                            .build()</b>
+&nbsp;            );
+<b class="fc">&nbsp;            Order order = orderService.finishPlaceOrder(placeOrderReq, orderId, transaction);</b>
+<b class="fc">&nbsp;            return mapOrderToOrderDTO(order, order.getStatus());</b>
+<b class="nc">&nbsp;        } catch (RuntimeException e) {</b>
+&nbsp;            //todo 1. async compensate all the states changed in this distrubted transaction
+&nbsp;            //async before canceling order placing, reverse the change of inventory first
+&nbsp;            //orderService.cancelPlaceOrder();
+&nbsp;            //2. error handling
+<b class="nc">&nbsp;            log.error(e.getMessage(), e);</b>
+<b class="nc">&nbsp;            throw new UnknownException();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public OrderDetailResDTO updateOrder(UpdateOrderReqDTO reqDTO) {
+&nbsp;        //validate input
+<b class="fc">&nbsp;        OrderService.validateUpdateOrder(reqDTO);</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            String requestId = UUID.randomUUID().toString();</b>
+<b class="fc">&nbsp;            String orderId = reqDTO.getOrderId();</b>
+<b class="fc">&nbsp;            Order order = orderService.findById(orderId);</b>
+&nbsp;
+<b class="fc">&nbsp;            OrderChangeTransaction transaction = orderService.startUpdateOrder(reqDTO, requestId);</b>
+<b class="fc">&nbsp;            Map&lt;Integer, OrderLineItem&gt; itemMap = order.getLineItems().stream().collect(Collectors.toMap(OrderLineItem::getProductId, Function.identity()));</b>
+<b class="fc">&nbsp;            productRemoteService.decreaseInventory(</b>
+<b class="fc">&nbsp;                    createBatchUpateReq(reqDTO, requestId, itemMap)</b>
+&nbsp;            );
+<b class="fc">&nbsp;            orderService.finishUpdateOrder(reqDTO, transaction);</b>
+<b class="fc">&nbsp;            return mapOrderToOrderDTO(order, order.getStatus());</b>
+<b class="nc">&nbsp;        } catch (RuntimeException e) {</b>
+&nbsp;            //todo 1. async compensate all the states changed in this distrubted transaction
+&nbsp;            //async before canceling order updating, reverse the change of inventory first
+&nbsp;            //2. error handling
+&nbsp;            //orderService.cancelUpdateOrder();
+<b class="nc">&nbsp;            log.error(e.getMessage(), e);</b>
+<b class="nc">&nbsp;            throw new UnknownException();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    private static BatchUpdateInventoryReqDTO createBatchUpateReq(UpdateOrderReqDTO reqDTO, String requestId, Map&lt;Integer, OrderLineItem&gt; itemMap) {
+<b class="fc">&nbsp;        return BatchUpdateInventoryReqDTO.builder()</b>
+<b class="fc">&nbsp;                .requestId(requestId)</b>
+<b class="fc">&nbsp;                .decreaseInventories(</b>
+<b class="fc">&nbsp;                        reqDTO.getLineItems().stream().map(l -&gt; {</b>
+<b class="fc">&nbsp;                            OrderLineItem item = itemMap.get(l.getProductId());</b>
+<b class="pc">&nbsp;                            if (item == null) {</b>
+<b class="nc">&nbsp;                                return new ChangeInventoryDTO(l.getProductId(), l.getQuantity());</b>
+&nbsp;                            } else {
+<b class="fc">&nbsp;                                return new ChangeInventoryDTO(l.getProductId(), l.getQuantity() - item.getQuantity());</b>
+&nbsp;                            }
+<b class="fc">&nbsp;                        }).collect(Collectors.toList())</b>
+&nbsp;                )
+<b class="fc">&nbsp;                .build();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-13 13:31</div>
+</div>
+</body>
+</html>

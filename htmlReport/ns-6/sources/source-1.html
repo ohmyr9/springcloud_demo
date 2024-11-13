@@ -1,0 +1,203 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CustomUserDetailsService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ronnie.gateway.authentication</a>
+</div>
+
+<h1>Coverage Summary for Class: CustomUserDetailsService (com.ronnie.gateway.authentication)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CustomUserDetailsService</td>
+<td class="coverageStat">
+  <span class="percent">
+    40%
+  </span>
+  <span class="absValue">
+    (2/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (4/16)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CustomUserDetailsService$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (2/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    23.5%
+  </span>
+  <span class="absValue">
+    (4/17)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ronnie.gateway.authentication;
+&nbsp;
+&nbsp;import com.ronnie.common.api.Result;
+&nbsp;import com.ronnie.common.constant.ServiceNames;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.core.ParameterizedTypeReference;
+&nbsp;import org.springframework.http.MediaType;
+&nbsp;import org.springframework.security.core.userdetails.ReactiveUserDetailsPasswordService;
+&nbsp;import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+&nbsp;import org.springframework.security.core.userdetails.UserDetails;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.web.reactive.function.client.WebClient;
+&nbsp;import org.springframework.web.util.UriComponentsBuilder;
+&nbsp;import reactor.core.publisher.Mono;
+&nbsp;
+&nbsp;import java.net.URI;
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;@Service
+&nbsp;public class CustomUserDetailsService implements ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
+&nbsp;    private final WebClient.Builder webClientBuilder;
+<b class="fc">&nbsp;    private final Logger logger = LoggerFactory.getLogger(this.getClass());</b>
+&nbsp;
+<b class="fc">&nbsp;    public CustomUserDetailsService(WebClient.Builder webClientBuilder) {</b>
+<b class="fc">&nbsp;        this.webClientBuilder = webClientBuilder;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Mono&lt;UserDetails&gt; updatePassword(UserDetails user, String newPassword) {
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Mono&lt;UserDetails&gt; findByUsername(String username) {
+<b class="nc">&nbsp;        URI uri = UriComponentsBuilder.fromUriString(&quot;http://&quot; + ServiceNames.USER_SERVICE + &quot;/v1/users/authenticate&quot;)</b>
+<b class="nc">&nbsp;                .queryParam(&quot;username&quot;, username)</b>
+<b class="nc">&nbsp;                .build().encode().toUri();</b>
+<b class="nc">&nbsp;        return webClientBuilder.build().get().uri(uri)</b>
+<b class="nc">&nbsp;                .accept(MediaType.APPLICATION_JSON).retrieve().bodyToMono(new ParameterizedTypeReference&lt;Result&lt;UserDetailsDTO&gt;&gt;() {</b>
+<b class="nc">&nbsp;                }).mapNotNull(r -&gt; {</b>
+<b class="nc">&nbsp;                    if (Result.isSuccess(r)) {</b>
+<b class="nc">&nbsp;                        UserDetailsDTO data = r.getData();</b>
+<b class="nc">&nbsp;                        logger.info(&quot;get user : {}&quot;, data.getUsername());</b>
+<b class="nc">&nbsp;                        return data;</b>
+&nbsp;                    } else {
+&nbsp;                        //log
+<b class="nc">&nbsp;                        return null;</b>
+&nbsp;                    }
+&nbsp;                });
+&nbsp;
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-13 13:31</div>
+</div>
+</body>
+</html>

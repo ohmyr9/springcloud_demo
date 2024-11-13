@@ -1,0 +1,211 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ronnie.user.service</a>
+</div>
+
+<h1>Coverage Summary for Class: UserService (com.ronnie.user.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserService</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (5/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.3%
+  </span>
+  <span class="absValue">
+    (28/31)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$v7OpyoRZ</td>
+  </tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$v7OpyoRZ$auxiliary$1wc9o5Dx</td>
+  </tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$v7OpyoRZ$auxiliary$Fc2rREZs</td>
+  </tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$v7OpyoRZ$auxiliary$jKjW9f0L</td>
+  </tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$v7OpyoRZ$auxiliary$pwCo5gze</td>
+  </tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$v7OpyoRZ$auxiliary$QAui1Ysi</td>
+  </tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$v7OpyoRZ$auxiliary$rfGhw2rm</td>
+  </tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$v7OpyoRZ$auxiliary$USdyyvE9</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (5/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.3%
+  </span>
+  <span class="absValue">
+    (28/31)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ronnie.user.service;
+&nbsp;
+&nbsp;import com.ronnie.user.api.dto.CreateUserReqDTO;
+&nbsp;import com.ronnie.user.api.dto.UserDTO;
+&nbsp;import com.ronnie.user.api.dto.UserDetailsDTO;
+&nbsp;import com.ronnie.user.api.dto.UserRolesDTO;
+&nbsp;import com.ronnie.user.exception.UserIdNotFoundException;
+&nbsp;import com.ronnie.user.model.UserAccount;
+&nbsp;import com.ronnie.user.model.UserRole;
+&nbsp;import com.ronnie.user.repo.UserRepository;
+&nbsp;import org.springframework.security.core.userdetails.UsernameNotFoundException;
+&nbsp;import org.springframework.security.crypto.password.PasswordEncoder;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import javax.validation.constraints.NotNull;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Set;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;import java.util.stream.StreamSupport;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class UserService {
+&nbsp;    private final UserRepository userRepository;
+&nbsp;    private final PasswordEncoder passwordEncoder;
+&nbsp;
+<b class="fc">&nbsp;    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {</b>
+<b class="fc">&nbsp;        this.userRepository = userRepository;</b>
+<b class="fc">&nbsp;        this.passwordEncoder = passwordEncoder;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public UserDetailsDTO userDetailsForAuth(String username) {
+<b class="fc">&nbsp;        return userRepository.findByUsername(username).map(userAccount -&gt; {</b>
+<b class="fc">&nbsp;            UserDetailsDTO userDetailsDTO = UserDetailsDTO.builder()</b>
+<b class="fc">&nbsp;                    .username(userAccount.getUsername())</b>
+<b class="fc">&nbsp;                    .password(userAccount.getPassword())</b>
+<b class="fc">&nbsp;                    .accountNonExpired(true)</b>
+<b class="fc">&nbsp;                    .accountNonLocked(true)</b>
+<b class="fc">&nbsp;                    .credentialsNonExpired(true)</b>
+<b class="fc">&nbsp;                    .enabled(true)</b>
+<b class="fc">&nbsp;                    .authorities(userAccount.getRoles().stream().map(r -&gt; new UserRolesDTO(r.getRoleKey())).collect(Collectors.toSet()))</b>
+<b class="fc">&nbsp;                    .build();</b>
+<b class="fc">&nbsp;            return userDetailsDTO;</b>
+<b class="fc">&nbsp;        }).orElseThrow(() -&gt; new UsernameNotFoundException(username));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public UserDTO createUser(CreateUserReqDTO createUserDTO) {
+<b class="fc">&nbsp;        UserAccount userAccount = UserAccount.builder()</b>
+<b class="fc">&nbsp;                .username(createUserDTO.getUsername())</b>
+<b class="fc">&nbsp;                .password(passwordEncoder.encode(createUserDTO.getPassword()))</b>
+<b class="fc">&nbsp;                .roles(Set.of(new UserRole(null, &quot;default&quot;)))</b>
+<b class="fc">&nbsp;                .build();</b>
+<b class="fc">&nbsp;        UserAccount savedUser = userRepository.save(userAccount);</b>
+<b class="fc">&nbsp;        return mapUserToUserDTO(savedUser);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static UserDTO mapUserToUserDTO(UserAccount savedUser) {
+<b class="fc">&nbsp;        UserDTO userDTO = UserDTO.builder()</b>
+<b class="fc">&nbsp;                .id(savedUser.getId())</b>
+<b class="fc">&nbsp;                .username(savedUser.getUsername())</b>
+<b class="fc">&nbsp;                .authorities(savedUser.getRoles().stream().map(r -&gt; new UserRolesDTO(r.getRoleKey()))</b>
+<b class="fc">&nbsp;                        .collect(Collectors.toList())).build();</b>
+<b class="fc">&nbsp;        return userDTO;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public UserDTO findUserById(@NotNull Integer id) {
+<b class="nc">&nbsp;        return userRepository.findById(id).map(UserService::mapUserToUserDTO).orElseThrow(() -&gt; new UserIdNotFoundException());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public UserDTO findUserByName(@NotNull String name) {
+<b class="nc">&nbsp;        return userRepository.findByUsername(name).map(UserService::mapUserToUserDTO).orElseThrow(() -&gt; new UserIdNotFoundException());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;UserDTO&gt; listAllUsers() {
+<b class="nc">&nbsp;        return StreamSupport.stream(userRepository.findAll().spliterator(), false).map(UserService::mapUserToUserDTO).collect(Collectors.toList());</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-13 13:31</div>
+</div>
+</body>
+</html>

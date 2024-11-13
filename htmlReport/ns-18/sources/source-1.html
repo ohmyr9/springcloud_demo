@@ -1,0 +1,266 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > InventoryService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ronnie.product.service</a>
+</div>
+
+<h1>Coverage Summary for Class: InventoryService (com.ronnie.product.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InventoryService</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (2/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42.6%
+  </span>
+  <span class="absValue">
+    (20/47)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">InventoryService$$EnhancerBySpringCGLIB$$56c59c21</td>
+  </tr>
+  <tr>
+    <td class="name">InventoryService$$EnhancerBySpringCGLIB$$56c59c21$$FastClassBySpringCGLIB$$30da621c</td>
+  </tr>
+  <tr>
+    <td class="name">InventoryService$$FastClassBySpringCGLIB$$2309cd59</td>
+  </tr>
+  <tr>
+    <td class="name">InventoryService$MockitoMock$UproZvEo</td>
+  </tr>
+  <tr>
+    <td class="name">InventoryService$MockitoMock$UproZvEo$auxiliary$0hyFhQCH</td>
+  </tr>
+  <tr>
+    <td class="name">InventoryService$MockitoMock$UproZvEo$auxiliary$gvAZ0Rnw</td>
+  </tr>
+  <tr>
+    <td class="name">InventoryService$MockitoMock$UproZvEo$auxiliary$IiGXfmRN</td>
+  </tr>
+  <tr>
+    <td class="name">InventoryService$MockitoMock$UproZvEo$auxiliary$LOsOhhPY</td>
+  </tr>
+  <tr>
+    <td class="name">InventoryService$MockitoMock$UproZvEo$auxiliary$pohBayE0</td>
+  </tr>
+  <tr>
+    <td class="name">InventoryService$MockitoMock$UproZvEo$auxiliary$X8SmK4sX</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (2/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42.6%
+  </span>
+  <span class="absValue">
+    (20/47)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ronnie.product.service;
+&nbsp;
+&nbsp;import com.ronnie.product.api.dto.*;
+&nbsp;import com.ronnie.product.exception.NotEnoughInventoryException;
+&nbsp;import com.ronnie.product.exception.ProductNotExistException;
+&nbsp;import com.ronnie.product.model.Inventory;
+&nbsp;import com.ronnie.product.model.InventoryChangeItemLog;
+&nbsp;import com.ronnie.product.model.InventoryChangeLog;
+&nbsp;import com.ronnie.product.model.Product;
+&nbsp;import com.ronnie.product.repo.InventoryChangeLogRepository;
+&nbsp;import com.ronnie.product.repo.InventoryRepository;
+&nbsp;import com.ronnie.product.repo.ProductRepository;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;import javax.validation.Valid;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.Set;
+&nbsp;import java.util.UUID;
+&nbsp;import java.util.function.Function;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;import static java.util.stream.Collectors.toMap;
+&nbsp;import static java.util.stream.StreamSupport.stream;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class InventoryService {
+&nbsp;    private final InventoryRepository inventoryRepository;
+&nbsp;    private final InventoryChangeLogRepository changeLogRepository;
+&nbsp;    private final ProductRepository productRepository;
+&nbsp;
+<b class="fc">&nbsp;    public InventoryService(InventoryRepository inventoryRepository, InventoryChangeLogRepository inventoryChangeLogRepository, ProductRepository productRepository) {</b>
+<b class="fc">&nbsp;        this.inventoryRepository = inventoryRepository;</b>
+<b class="fc">&nbsp;        this.changeLogRepository = inventoryChangeLogRepository;</b>
+<b class="fc">&nbsp;        this.productRepository = productRepository;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public void decreaseInventory(@Valid BatchUpdateInventoryReqDTO req) {
+<b class="fc">&nbsp;        Set&lt;Integer&gt; productIds = req.getDecreaseInventories().stream().map(DecreaseInventory::getProductId).collect(Collectors.toSet());</b>
+&nbsp;
+<b class="fc">&nbsp;        Map&lt;Integer, Inventory&gt; inventories =</b>
+<b class="fc">&nbsp;                stream(inventoryRepository.findAllByProductIdIn(productIds).spliterator(), false)</b>
+<b class="fc">&nbsp;                        .collect(toMap(Inventory::getProductId, Function.identity()));</b>
+<b class="fc">&nbsp;        req.getDecreaseInventories().forEach(decreaseItem -&gt; {</b>
+<b class="fc">&nbsp;            Inventory inventory = inventories.get(decreaseItem.getProductId());</b>
+&nbsp;            //check products exists
+<b class="pc">&nbsp;            if (inventory == null) {</b>
+<b class="nc">&nbsp;                throw new ProductNotExistException();</b>
+&nbsp;            }
+<b class="fc">&nbsp;            int quantity = inventory.getQuantity() - decreaseItem.getQuantity();</b>
+<b class="pc">&nbsp;            if (quantity &lt; 0) {</b>
+<b class="nc">&nbsp;                throw new NotEnoughInventoryException();</b>
+&nbsp;            }
+&nbsp;            //persistent decreased inventory
+<b class="fc">&nbsp;            inventoryRepository.save(new Inventory(inventory.getId(), inventory.getProductId(), quantity, inventory.getVersion()));</b>
+&nbsp;        });
+&nbsp;
+&nbsp;        //insert inventory change logs
+<b class="fc">&nbsp;        Set&lt;InventoryChangeItemLog&gt; itemLogs = req.getDecreaseInventories().stream()</b>
+<b class="fc">&nbsp;                .map(decreaseInventory -&gt; new InventoryChangeItemLog(null, decreaseInventory.getProductId(), -decreaseInventory.getQuantity()))</b>
+<b class="fc">&nbsp;                .collect(Collectors.toSet());</b>
+<b class="fc">&nbsp;        InventoryChangeLog changeLog = new InventoryChangeLog(null, req.getRequestId(), itemLogs);</b>
+<b class="fc">&nbsp;        changeLogRepository.save(changeLog);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public InventoryDTO changeInventory(ChangeInventoryReqDTO reqDTO) {
+<b class="nc">&nbsp;        return inventoryRepository.findByProductId(reqDTO.getProductId())</b>
+<b class="nc">&nbsp;                .map(inventory -&gt; {</b>
+<b class="nc">&nbsp;                    int quantity = reqDTO.getQuantity() - inventory.getQuantity();</b>
+<b class="nc">&nbsp;                    if (quantity == 0) {</b>
+<b class="nc">&nbsp;                        return new InventoryDTO(reqDTO.getProductId(), reqDTO.getQuantity());</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                    inventoryRepository.save(new Inventory(inventory.getId(), inventory.getProductId(), quantity, inventory.getVersion()));</b>
+<b class="nc">&nbsp;                    Set&lt;InventoryChangeItemLog&gt; itemLogs = Set.of(new InventoryChangeItemLog(null, reqDTO.getProductId(), quantity));</b>
+<b class="nc">&nbsp;                    InventoryChangeLog changeLog = new InventoryChangeLog(null, UUID.randomUUID().toString(), itemLogs);</b>
+<b class="nc">&nbsp;                    changeLogRepository.save(changeLog);</b>
+<b class="nc">&nbsp;                    return new InventoryDTO(reqDTO.getProductId(), reqDTO.getQuantity());</b>
+<b class="nc">&nbsp;                }).orElseThrow(ProductNotExistException::new);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public void deleteInventory(Integer id) {
+<b class="fc">&nbsp;        inventoryRepository.deleteByProductId(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;InventoryDetailDTO&gt; listAll() {
+<b class="nc">&nbsp;        Iterable&lt;Inventory&gt; inventories = inventoryRepository.findAll();</b>
+<b class="nc">&nbsp;        List&lt;Integer&gt; productIds = stream(inventories.spliterator(), false).map(Inventory::getProductId).collect(Collectors.toList());</b>
+<b class="nc">&nbsp;        Map&lt;Integer, Product&gt; productMap = stream(productRepository.findAllById(productIds).spliterator(), false).collect(toMap(p -&gt; p.getId(), Function.identity()));</b>
+<b class="nc">&nbsp;        return stream(inventories.spliterator(), false).map(inventory -&gt; {</b>
+<b class="nc">&nbsp;            Product product = productMap.get(inventory.getProductId());</b>
+<b class="nc">&nbsp;            if (product == null) {</b>
+<b class="nc">&nbsp;                throw new ProductNotExistException();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return InventoryDetailDTO.builder()</b>
+<b class="nc">&nbsp;                    .productId(inventory.getProductId())</b>
+<b class="nc">&nbsp;                    .quantity(inventory.getQuantity())</b>
+<b class="nc">&nbsp;                    .price(product.getPrice())</b>
+<b class="nc">&nbsp;                    .name(product.getName())</b>
+<b class="nc">&nbsp;                    .build();</b>
+<b class="nc">&nbsp;        }).collect(Collectors.toList());</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-13 13:31</div>
+</div>
+</body>
+</html>

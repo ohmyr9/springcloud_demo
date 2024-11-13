@@ -1,0 +1,179 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > OrderController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ronnie.order.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: OrderController (com.ronnie.order.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OrderController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (2/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    31.8%
+  </span>
+  <span class="absValue">
+    (7/22)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ronnie.order.controller;
+&nbsp;
+&nbsp;
+&nbsp;import com.ronnie.common.api.Result;
+&nbsp;import com.ronnie.common.api.UserDTO;
+&nbsp;import com.ronnie.common.api.UserRemoteService;
+&nbsp;import com.ronnie.common.constant.RequestHeaders;
+&nbsp;import com.ronnie.order.api.dto.OrderDetailResDTO;
+&nbsp;import com.ronnie.order.api.dto.OrderLineItemDTO;
+&nbsp;import com.ronnie.order.api.dto.PlaceOrderReqDTO;
+&nbsp;import com.ronnie.order.api.dto.UpdateOrderReqDTO;
+&nbsp;import com.ronnie.order.service.OrderChangeCoordinator;
+&nbsp;import com.ronnie.order.service.OrderService;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import javax.validation.Valid;
+&nbsp;import javax.validation.constraints.NotNull;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/v1/orders&quot;)
+&nbsp;public class OrderController {
+<b class="fc">&nbsp;    private final Logger logger = LoggerFactory.getLogger(this.getClass());</b>
+&nbsp;    private final OrderService orderService;
+&nbsp;    private final UserRemoteService userRemoteService;
+&nbsp;    private final OrderChangeCoordinator orderChangeCoordinator;
+&nbsp;
+<b class="fc">&nbsp;    public OrderController(OrderService orderService, UserRemoteService userRemoteService, OrderChangeCoordinator orderChangeCoordinator) {</b>
+<b class="fc">&nbsp;        this.orderService = orderService;</b>
+<b class="fc">&nbsp;        this.userRemoteService = userRemoteService;</b>
+<b class="fc">&nbsp;        this.orderChangeCoordinator = orderChangeCoordinator;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping
+&nbsp;    public Result&lt;OrderDetailResDTO&gt; placeOrder(@RequestBody @Valid PlaceOrderReqDTO placeOrderReq) {
+<b class="fc">&nbsp;        logger.info(&quot;placeOrder: &quot; + placeOrderReq);</b>
+<b class="fc">&nbsp;        return Result.success(orderChangeCoordinator.placeOrder(placeOrderReq));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/test&quot;)
+&nbsp;    public Result&lt;OrderDetailResDTO&gt; testPlaceOrder() {
+<b class="nc">&nbsp;        PlaceOrderReqDTO req = PlaceOrderReqDTO.builder().userId(1).lineItems(List.of(</b>
+&nbsp;                OrderLineItemDTO
+<b class="nc">&nbsp;                        .builder()</b>
+<b class="nc">&nbsp;                        .productId(1)</b>
+<b class="nc">&nbsp;                        .quantity(2)</b>
+<b class="nc">&nbsp;                        .build())).build();</b>
+<b class="nc">&nbsp;        logger.info(&quot;test placeOrder: &quot; + req);</b>
+<b class="nc">&nbsp;        return Result.success(orderChangeCoordinator.placeOrder(req));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/{orderId}&quot;)
+&nbsp;    public Result&lt;OrderDetailResDTO&gt; updateOrderDetail(@RequestBody @Valid UpdateOrderReqDTO reqDTO, @PathVariable String orderId) {
+<b class="nc">&nbsp;        reqDTO.setOrderId(orderId);</b>
+<b class="nc">&nbsp;        logger.info(&quot;updateOrderDetail: {}&quot;, reqDTO);</b>
+<b class="nc">&nbsp;        return Result.success(orderChangeCoordinator.updateOrder(reqDTO));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping
+&nbsp;    public Result&lt;List&lt;OrderDetailResDTO&gt;&gt; listOrders(@RequestHeader(RequestHeaders.CURRENT_USER) @NotNull String currentUser) {
+<b class="nc">&nbsp;        logger.info(&quot;listOrders: &quot; + currentUser);</b>
+<b class="nc">&nbsp;        UserDTO userDTO = userRemoteService.getUserByName(currentUser);</b>
+&nbsp;//        return Result.success(orderService.listOrders());
+<b class="nc">&nbsp;        return Result.success(orderService.listOrders(userDTO.getId()));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public Result&lt;OrderDetailResDTO&gt; orderDetail(@PathVariable(&quot;id&quot;) @NotNull String id, @RequestHeader(RequestHeaders.CURRENT_USER) String currentUser) {
+<b class="nc">&nbsp;        logger.info(&quot;order detail: &quot; + id);</b>
+<b class="nc">&nbsp;        return Result.success(orderService.orderDetail(id));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-13 13:31</div>
+</div>
+</body>
+</html>

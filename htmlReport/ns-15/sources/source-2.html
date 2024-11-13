@@ -1,0 +1,169 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ProductController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ronnie.product.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: ProductController (com.ronnie.product.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProductController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (4/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.6%
+  </span>
+  <span class="absValue">
+    (7/11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ronnie.product.controller;
+&nbsp;
+&nbsp;import com.ronnie.common.api.Result;
+&nbsp;import com.ronnie.product.api.dto.CreateProductReq;
+&nbsp;import com.ronnie.product.api.dto.ProductDTO;
+&nbsp;import com.ronnie.product.api.dto.UpdateProductReq;
+&nbsp;import com.ronnie.product.service.ProductService;
+&nbsp;import org.springframework.util.CollectionUtils;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import javax.validation.Valid;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/v1/products&quot;)
+&nbsp;public class ProductController {
+&nbsp;    private final ProductService productService;
+&nbsp;
+<b class="fc">&nbsp;    public ProductController(ProductService productService) {</b>
+<b class="fc">&nbsp;        this.productService = productService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping
+&nbsp;    Result&lt;ProductDTO&gt; createProduct(@RequestBody @Valid CreateProductReq createProductReq) {
+<b class="fc">&nbsp;        return Result.success(productService.createProduct(createProductReq));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping
+&nbsp;    Result&lt;Void&gt; updateProduct(UpdateProductReq updateProductReq) {
+<b class="fc">&nbsp;        productService.updateProduct(updateProductReq);</b>
+<b class="fc">&nbsp;        return Result.success();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{productId}&quot;)
+&nbsp;    Result&lt;ProductDTO&gt; getProduct(@PathVariable Integer productId) {
+<b class="nc">&nbsp;        return Result.success(productService.findById(productId));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping
+&nbsp;    Result&lt;List&lt;ProductDTO&gt;&gt; findProductsByIds(@RequestParam(required = false)  List&lt;Integer&gt; ids) {
+<b class="pc">&nbsp;        if(CollectionUtils.isEmpty(ids)){</b>
+&nbsp;            //fixme here returning all product is just for demonstrating, don&#39;t do this in production
+<b class="nc">&nbsp;            return Result.success(productService.listProducts());</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return Result.success(productService.findProductsByIds(ids));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping
+&nbsp;    Result&lt;Void&gt; deleteProduct(@RequestParam Integer productId) {
+<b class="nc">&nbsp;        productService.deleteById(productId);</b>
+<b class="nc">&nbsp;        return Result.success();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-13 13:31</div>
+</div>
+</body>
+</html>

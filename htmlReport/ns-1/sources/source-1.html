@@ -1,0 +1,148 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Result</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ronnie.common.api</a>
+</div>
+
+<h1>Coverage Summary for Class: Result (com.ronnie.common.api)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Result</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.9%
+  </span>
+  <span class="absValue">
+    (2/34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/10)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ronnie.common.api;
+&nbsp;
+&nbsp;import com.fasterxml.jackson.annotation.JsonInclude;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.NoArgsConstructor;
+&nbsp;
+<b class="pc">&nbsp;@Data</b>
+<b class="fc">&nbsp;@AllArgsConstructor</b>
+<b class="fc">&nbsp;@NoArgsConstructor</b>
+&nbsp;@JsonInclude(JsonInclude.Include.NON_NULL)
+&nbsp;public class Result&lt;T&gt; {
+<b class="fc">&nbsp;    private  T data;</b>
+<b class="fc">&nbsp;    private  Integer code;</b>
+<b class="fc">&nbsp;    private  String msg;</b>
+&nbsp;
+&nbsp;    public static &lt;T&gt; Result&lt;T&gt; success(T data) {
+<b class="fc">&nbsp;        return new Result&lt;&gt;(data, null, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static &lt;T&gt; Result&lt;T&gt; success() {
+<b class="fc">&nbsp;        return success(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static &lt;T&gt; Result&lt;T&gt; error(Integer code, String msg) {
+<b class="nc">&nbsp;        return new Result&lt;&gt;(null, code, msg);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static boolean isSuccess(Result&lt;?&gt; result) {
+<b class="pc">&nbsp;        return result != null &amp;&amp; result.code == null;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-11-13 13:31</div>
+</div>
+</body>
+</html>
