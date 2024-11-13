@@ -74,6 +74,7 @@ docker-compose up -d
 ``````
 
 2. Alternatively, you can manually start all the services one by one using `mvn spring-boot:run`. The config server is not needed in the local environment.
+3. The gateway can be accessed at the URL localhost:8088. The first time you visit this domain, a login form will appear for authentication. There are two initial users: one with the username "user" and password "password," whoivileges, and another with the username "admin" and password "admin," who has administrative privileges. Currently, there are only two predefined roles, and authorization management is implemented on the Cloud Gateway using Spring Security, based on URL patterns and HTTP methods. 
 
 #### Functionality:
 
