@@ -70,7 +70,7 @@ There are two ways to start the project. Each module has two property files: one
 ``````bash
 ## Build docker images and start all the containers, 
 ## start order: config-server -> eureka -> (gateway, user, order, product)
-docker-compose up
+docker-compose up -d
 ``````
 
 2. Alternatively, you can manually start all the services one by one using `mvn spring-boot:run`. The config server is not needed in the local environment.
