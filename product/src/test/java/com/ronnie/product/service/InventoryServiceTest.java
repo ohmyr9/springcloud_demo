@@ -1,6 +1,6 @@
 package com.ronnie.product.service;
 
-import com.ronnie.product.api.dto.BatchDecreaseInventoryReq;
+import com.ronnie.product.api.dto.BatchUpdateInventoryReqDTO;
 import com.ronnie.product.api.dto.DecreaseInventory;
 import com.ronnie.product.model.Inventory;
 import com.ronnie.product.model.InventoryChangeLog;
@@ -26,13 +26,14 @@ class InventoryServiceTest {
     @Autowired
     private InventoryRepository inventoryRepository;
     @Test
+//    @Sql("classpath:test_data.sql")
     void decreaseInventory() {
         String requestId = UUID.randomUUID().toString();
         int productOne = 1;
         int productTwo = 2;
         int quantityOne = 10;
         int quantityTwo = 20;
-        BatchDecreaseInventoryReq req = BatchDecreaseInventoryReq.builder()
+        BatchUpdateInventoryReqDTO req = BatchUpdateInventoryReqDTO.builder()
                 .requestId(requestId)
                 .decreaseInventories(List.of(new DecreaseInventory(productOne, quantityOne),
                         new DecreaseInventory(productTwo, quantityTwo)))

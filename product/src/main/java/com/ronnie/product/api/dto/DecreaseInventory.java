@@ -13,6 +13,6 @@ import javax.validation.constraints.Positive;
 public final class DecreaseInventory {
     @NotNull
     private final Integer productId;
-    @Positive
-    private final int quantity;
+    @NotNull
+    private final Integer quantity;
 }

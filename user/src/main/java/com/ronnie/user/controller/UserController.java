@@ -8,6 +8,7 @@ import com.ronnie.user.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -21,6 +22,11 @@ public class UserController {
     @GetMapping("/{id}")
     public Result<UserDTO> getUser(@PathVariable @NotNull Integer id) {
         return Result.success(userService.findUserById(id));
+    }
+
+    @GetMapping()
+    public Result<List<UserDTO>> listUsers() {
+        return Result.success(userService.listAllUsers());
     }
 
     @GetMapping("/name/{name}")

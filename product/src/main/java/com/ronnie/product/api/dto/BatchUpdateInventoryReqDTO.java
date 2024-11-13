@@ -6,14 +6,12 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @Builder
-public final class CreateProductReq {
-    @NotEmpty
-    private final String name;
-    @NotNull
-    private final BigDecimal price;
+public final class BatchUpdateInventoryReqDTO {
+    private final @NotNull String requestId;
+    private final @NotEmpty List<DecreaseInventory> decreaseInventories;
 }

@@ -14,6 +14,8 @@ import java.util.List;
 public final class PlaceOrderReqDTO {
     @NotNull
     private final Integer userId;
+
     @NotEmpty
     private final List<OrderLineItemDTO> lineItems;
+
 }

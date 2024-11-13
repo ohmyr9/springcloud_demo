@@ -8,10 +8,10 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface OrderRepository extends CrudRepository<Order, Integer> {
+public interface OrderRepository extends CrudRepository<Order, String> {
     @Modifying
     @Query("UPDATE `ORDER` SET status=:orderStatus WHERE id = :id")
-    boolean updateStatusById(Integer id, OrderStatus orderStatus);
+    boolean updateStatusById(String id, OrderStatus orderStatus);
 
     List<Order> findAllByUserId(Integer userId);
 }

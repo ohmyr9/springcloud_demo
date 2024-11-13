@@ -2,7 +2,6 @@ package com.ronnie.order.config;
 
 import com.ronnie.common.api.UserRemoteService;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;

@@ -11,8 +11,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @Builder
-public class BatchDecreaseInventoryReqDTO {
+public class BatchUpdateInventoryReqDTO {
     @NotNull
     private String requestId;
-    private final @NotEmpty List<DecreaseInventoryDTO> decreaseInventories;
+    private final @NotEmpty List<ChangeInventoryDTO> decreaseInventories;
 }

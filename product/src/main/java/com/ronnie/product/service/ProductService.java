@@ -7,6 +7,7 @@ import com.ronnie.product.exception.ProductNotExistException;
 import com.ronnie.product.model.Product;
 import com.ronnie.product.repo.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,13 +17,17 @@ import static java.util.stream.StreamSupport.stream;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final InventoryService inventoryService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, InventoryService inventoryService) {
         this.productRepository = productRepository;
+
+        this.inventoryService = inventoryService;
     }
 
-    public Integer createProduct(CreateProductReq req) {
-        return productRepository.save(new Product(null, req.getName(), req.getPrice())).getId();
+    public ProductDTO createProduct(CreateProductReq req) {
+        Product save = productRepository.save(new Product(null, req.getName(), req.getPrice()));
+        return new ProductDTO(save.getId(), save.getName(), save.getPrice());
     }
 
     public void updateProduct(UpdateProductReq req) {
@@ -46,5 +51,13 @@ public class ProductService {
 
     public ProductDTO findById(Integer productId) {
         return productRepository.findById(productId).map(DO -> new ProductDTO(DO.getId(), DO.getName(), DO.getPrice())).orElseThrow(ProductNotExistException::new);
+    }
+
+    @Transactional
+    public void deleteById(Integer productId) {
+        productRepository.findById(productId).ifPresent(product -> {
+            productRepository.deleteById(productId);
+            inventoryService.deleteInventory(product.getId());
+        });
     }
 }

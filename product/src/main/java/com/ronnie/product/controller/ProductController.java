@@ -21,7 +21,7 @@ public class ProductController {
     }
 
     @PostMapping
-    Result<Integer> createProduct(@RequestBody @Valid CreateProductReq createProductReq) {
+    Result<ProductDTO> createProduct(@RequestBody @Valid CreateProductReq createProductReq) {
         return Result.success(productService.createProduct(createProductReq));
     }
 
@@ -43,5 +43,11 @@ public class ProductController {
             return Result.success(productService.listProducts());
         }
         return Result.success(productService.findProductsByIds(ids));
+    }
+
+    @DeleteMapping
+    Result<Void> deleteProduct(@RequestParam Integer productId) {
+        productService.deleteById(productId);
+        return Result.success();
     }
 }

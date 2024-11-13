@@ -12,9 +12,9 @@ import javax.validation.constraints.Positive;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DecreaseInventoryDTO {
+public class ChangeInventoryDTO {
     @NotNull
     private Integer productId;
-    @Positive
-    private int quantity;
+    @NotNull
+    private Integer quantity;
 }

@@ -13,8 +13,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class UserService {
@@ -63,7 +65,12 @@ public class UserService {
     public UserDTO findUserById(@NotNull Integer id) {
         return userRepository.findById(id).map(UserService::mapUserToUserDTO).orElseThrow(() -> new UserIdNotFoundException());
     }
+
     public UserDTO findUserByName(@NotNull String name) {
         return userRepository.findByUsername(name).map(UserService::mapUserToUserDTO).orElseThrow(() -> new UserIdNotFoundException());
+    }
+
+    public List<UserDTO> listAllUsers() {
+        return StreamSupport.stream(userRepository.findAll().spliterator(), false).map(UserService::mapUserToUserDTO).collect(Collectors.toList());
     }
 }

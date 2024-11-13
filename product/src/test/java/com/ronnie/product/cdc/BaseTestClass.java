@@ -18,7 +18,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 
-@SpringBootTest(classes = ProductApplication.class)
+@SpringBootTest
 public abstract class BaseTestClass {
     @Autowired
     ProductController productController;

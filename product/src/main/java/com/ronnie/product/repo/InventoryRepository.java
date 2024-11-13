@@ -15,5 +15,7 @@ public interface InventoryRepository extends CrudRepository<Inventory,Integer> {
     @Query("UPDATE INVENTORY SET QUANTITY=QUANTITY-:quantity WHERE id = :productId AND QUANTITY>=:quantity")
     boolean decreaseInventory(Integer productId, Integer quantity);
 
-    Optional<Inventory> findByProductId(int productId);
+    Optional<Inventory> findByProductId(Integer productId);
+
+    void deleteByProductId(Integer productId);
 }

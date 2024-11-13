@@ -7,17 +7,14 @@ spring:
     import: optional:configserver:http://localhost:8888
   sleuth:
     reactor:
-      instrumentation-type: decorate_queues
+      instrumentation-type: decorate_on_each
     sampler:
       probability: 1.0
     baggage:
       remote-fields: CURRENT_USER
-  #  zipkin:
-#    sender:
-#      type: web
-#    base-url: http://localhost:9411
-#    enabled: true
-#    discovery-client-enabled: false
+  zipkin:
+    enabled: false
+
   cloud:
     gateway:
       routes:
@@ -36,7 +33,7 @@ spring:
         - id: product
           uri: lb://product
           predicates:
-            - Path=/v1/products/**
+            - Path=/v1/products/**,/v1/inventories/**
           filters:
             - CircuitBreaker=product
       default-filters:

@@ -25,8 +25,8 @@ public class ProductRemoteService {
         this.restTemplate = restTemplate;
     }
 
-    public void decreaseInventory(BatchDecreaseInventoryReqDTO req) {
-        RequestEntity<BatchDecreaseInventoryReqDTO> request = RequestEntity
+    public void decreaseInventory(BatchUpdateInventoryReqDTO req) {
+        RequestEntity<BatchUpdateInventoryReqDTO> request = RequestEntity
                 .post(PRODUCT_SERVICE_NAME + "/v1/inventories")
                 .accept(MediaType.APPLICATION_JSON)
                 .body(req);

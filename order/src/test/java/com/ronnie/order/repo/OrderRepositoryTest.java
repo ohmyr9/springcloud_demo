@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @DataJdbcTest
 public class OrderRepositoryTest {
@@ -16,7 +17,7 @@ public class OrderRepositoryTest {
 
     @Test
     public void updateStatusOnNonExistentOrderShouldFail() {
-        int nonExistentId = 99999;
+        String nonExistentId = "99999";
         boolean updated = repository.updateStatusById(nonExistentId, OrderStatus.PLACED);
         Assertions.assertFalse(updated);
     }
@@ -24,7 +25,7 @@ public class OrderRepositoryTest {
     @Test
     public void updateStatusOnExistentOrderShouldSucceed() {
         OrderStatus originalStatus = OrderStatus.DRAFT;
-        Order saved = repository.save(new Order(null, 1, originalStatus, null));
+        Order saved = repository.save(new Order(UUID.randomUUID().toString(), 1, originalStatus, null, null));
         OrderStatus newStatus = OrderStatus.PLACED;
 
         boolean updated = repository.updateStatusById(saved.getId(), newStatus);
@@ -38,7 +39,7 @@ public class OrderRepositoryTest {
     @Test
     public void updateStatusOnExistentOrderWithSameStatusShouldBeIdempotent() {
         OrderStatus originalStatus = OrderStatus.DRAFT;
-        Order saved = repository.save(new Order(null, 1, originalStatus, null));
+        Order saved = repository.save(new Order(UUID.randomUUID().toString(), 1, originalStatus, null, null));
         OrderStatus newStatus = originalStatus;
 
         boolean updated = repository.updateStatusById(saved.getId(), newStatus);

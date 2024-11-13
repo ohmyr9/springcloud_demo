@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public final class OrderDetailResDTO {
-    private final Integer orderId;
+    private final String orderId;
     private final Integer userId;
     private final OrderStatus orderStatus;
     private final List<OrderLineItemDTO> lineItems;

@@ -22,7 +22,7 @@ public class UserRemoteService {
 
     public UserDTO getUserByName(String userName) {
         URI uri = UriComponentsBuilder
-                .fromHttpUrl(USER_SERVICE_NAME + "/users/" + userName)
+                .fromHttpUrl(USER_SERVICE_NAME + "/v1/users/name/" + userName)
                 .build().encode().toUri();
 
         HttpHeaders headers = new HttpHeaders();

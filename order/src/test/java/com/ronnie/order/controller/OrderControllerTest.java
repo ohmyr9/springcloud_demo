@@ -6,6 +6,7 @@ import com.ronnie.order.api.dto.OrderDetailResDTO;
 import com.ronnie.order.api.dto.OrderLineItemDTO;
 import com.ronnie.order.api.dto.PlaceOrderReqDTO;
 import com.ronnie.order.config.RestTemplateConfig;
+import com.ronnie.order.service.OrderChangeCoordinator;
 import com.ronnie.order.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,13 @@ public class OrderControllerTest {
     @Autowired
     private MockMvc mvc;
     @MockBean
-    private OrderService service;
+    private OrderChangeCoordinator service;
+    @MockBean
+    private OrderService orderService;
 
     @Test
     public void placeOrder() throws Exception {
-        int orderId = 1;
+        String orderId = "12314325";
         OrderDetailResDTO order = OrderDetailResDTO.builder().
                 orderId(orderId)
                 .build();

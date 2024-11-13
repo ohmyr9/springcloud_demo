@@ -17,11 +17,10 @@ create table if not exists role
     role_key varchar2(10) unique
 );
 
-
 insert into role(role_key)
-values ('default');
+values ('ROLE_USER');
 insert into role(role_key)
-values ('admin');
+values ('ROLE_ADMIN');
 -- test users
 -- 1. user: password 2. admin:admin
 insert into user_account(username, password)
@@ -29,7 +28,7 @@ values ('user', '{bcrypt}$2a$10$Me7cdvvw0MGjL0BI/clQE.KEu1wc9H0PWVK0cOaEXRnIyQ5/
 insert into user_account(username, password)
 values ('admin', '{bcrypt}$2a$10$sgqZcp71wd6X72L38/GGheUbtsQYiinbJArD9gadIu/26gxGBfq.q');
 
-insert into user_role(user_id,role_key) values ( 1,'default' );
-insert into user_role(user_id,role_key) values ( 2,'default' );
-insert into user_role(user_id,role_key) values ( 2,'admin' );
+insert into user_role(user_id,role_key) values ( 1,'ROLE_USER' );
+insert into user_role(user_id,role_key) values ( 2,'ROLE_USER' );
+insert into user_role(user_id,role_key) values ( 2,'ROLE_ADMIN' );
 
