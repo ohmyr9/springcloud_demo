@@ -103,7 +103,7 @@ docker-compose up
 
 - Key workflows include placing and updating orders, as these are typical scenarios for distributed transactions.
 
-  <img src="/Users/yiluo/IdeaProjects/springcloud_wiley/README_img/image-20241113154435340.png" alt="image-20241113154435340" style="zoom:50%;" />
+  <img src="./README_img/image-20241113154435340.png" alt="image-20241113154435340" style="zoom:50%;" />
 
 In this demo, the Order service acts as a coordinator in this workflow, it has an order `order_change_transaction` dedicated to managing the status of the distributed transaction.
 
